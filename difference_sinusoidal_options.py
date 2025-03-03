@@ -1,0 +1,74 @@
+import numpy as np
+
+class DifferenceSinusoidal:
+    def __init__(self):
+        self.__f1s = 2
+        self.__f2s = 8
+        self.__fs = 200
+        self.__N = 100
+        
+    @property
+    def f1s(self):
+        return self.__f1s
+    
+    @f1s.setter
+    def f1s(self, value):
+        self.__f1s = value
+
+    @property
+    def f2s(self):
+        return self.__f2s
+    
+    @f2s.setter
+    def f2s(self, value):
+        self.__f2s = value
+
+    @property
+    def fs(self):
+        return self.__fs
+    
+    @fs.setter
+    def fs(self, value):
+        self.__fs = value
+
+    @property
+    def N(self):
+        return self.__N
+    
+    @N.setter
+    def N(self, value):
+        self.__N = value
+
+        
+    def calculate_signals(self):
+        if not self.N or not self.fs or not self.f1s or not self.f2s:
+            return (None, None, None)
+            
+        min_step = 0
+        Ts = 1/self.__fs
+        x = range(min_step, self.N)
+    
+        y = [(5*np.cos(2*np.pi*self.__f1s*k*Ts)-2*np.sin(2*np.pi*self.__f2s*k*Ts)) for k in x]
+        power = np.power(y,2)
+        energy = np.round(np.sum(power),4)
+        rmse = np.sqrt(energy/self.N)
+        average = np.mean(y)
+        variance = (1/self.N)*np.sum(np.power((y-average),2))
+        std = np.sqrt(variance)
+        median = np.median(y)
+        average_power = energy/self.N
+        
+        analyzed_data={
+            "energy":"{}".format(round(energy)),
+            "rmse":"{:.4f}".format(rmse),
+            "variance":"{:.4f}".format(variance),
+            "std":"{:.4f}".format(std),
+            "median":"{:.4e}".format(median),
+            "average":"{:.4e}".format(average),
+            "average_power":"{:.4f}".format(average_power),
+            "ipower":power
+        }
+      
+        return ([i/self.__fs for i in x],y,analyzed_data)
+        
+    

@@ -119,4 +119,4 @@ class FrequencyOptions:
           y = self.ampitute*signal.sawtooth(2 * np.pi * self.f_sig_hz * x)+self.dc
         
 
-        return (x,y)
+        return (x,y,None)
