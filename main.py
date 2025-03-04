@@ -54,13 +54,13 @@ def render_difference_sinusoidal_type(x,y,analyzed_data):
      
          
        data = [
-    ("Mean value", analyzed_data["average"], "V"),
-    ("RMS value", analyzed_data["rmse"], "V"),
-    ("Variance", analyzed_data["variance"], "V^2"),
-    ("Standard deviation", analyzed_data["std"], "V"),
-    ("Median", analyzed_data["median"], "V"),
-    ("Mean power", analyzed_data["average_power"], "V^2"),
-    ("Energy", analyzed_data["energy"], "J")
+    ("Mean value", analyzed_data["own_average"],analyzed_data["average"], "V"),
+    ("RMS value", analyzed_data["own_rmse"],analyzed_data["rmse"], "V"),
+    ("Variance", analyzed_data["own_variance"],analyzed_data["variance"], "V^2"),
+    ("STD", analyzed_data["own_std"],analyzed_data["std"], "V"),
+    ("Median", analyzed_data["own_median"],analyzed_data["median"], "V"),
+    ("Mean power", analyzed_data["own_average_power"],"", "V^2"),
+    ("Energy", analyzed_data["own_energy"],"", "J")
 ]   
        dpg.delete_item("table_analysis")
        with dpg.table(header_row=True, 
@@ -73,6 +73,7 @@ def render_difference_sinusoidal_type(x,y,analyzed_data):
         
          dpg.add_table_column(label=" ")
          dpg.add_table_column(label="Own algorithm")
+         dpg.add_table_column(label="Numpy Result")
          dpg.add_table_column(label="Unit")
          for row in data:
           with dpg.table_row():
@@ -140,7 +141,7 @@ def handle_change_graph_type(_, value):
                       label="Waveform", width=100)
           dpg.add_spacer(height=100)
     else:
-        with dpg.group(parent="settings",tag="difference_signals", width=300):
+        with dpg.group(parent="settings",tag="difference_signals", width=400):
             dpg.add_input_int(label="fs1 hz", default_value=difference_sinusoidals.f1s, callback=handle_change_values, user_data="f1s")            
             dpg.add_input_int(label="fs2 hz", default_value=difference_sinusoidals.f2s, callback=handle_change_values, user_data="f2s")      
             dpg.add_input_int(label="fs hz", default_value=difference_sinusoidals.fs, callback=handle_change_values, user_data="fs")  

@@ -1,4 +1,32 @@
+import math
 import numpy as np
+from functools import reduce
+
+
+def mean_own(y):
+    return math.fsum(y) / len(y)
+
+def rmse_own(y):
+    squared = [value**2 for value in y]
+    return math.sqrt(math.fsum(squared) / len(y))
+
+def variance_own(y, mean):
+    difference_square = [(value-mean)**2 for value in y]
+    
+    return math.fsum(difference_square) / len(y)
+
+def median_own(y):
+    sorted_value = sorted(y)
+    length = len(sorted_value)
+    center_index = length//2
+    if(length%2==1):
+        return sorted_value[center_index]
+    else:
+        value = sorted_value[center_index]
+        value_before = sorted_value[center_index-1]
+        return (value+value_before)/2
+    
+    
 
 class DifferenceSinusoidal:
     def __init__(self):
@@ -49,24 +77,42 @@ class DifferenceSinusoidal:
         x = range(min_step, self.N)
     
         y = [(5*np.cos(2*np.pi*self.__f1s*k*Ts)-2*np.sin(2*np.pi*self.__f2s*k*Ts)) for k in x]
+        
         power = np.power(y,2)
-        energy = np.round(np.sum(power),4)
+        energy = np.sum(power)
         rmse = np.sqrt(energy/self.N)
         average = np.mean(y)
         variance = (1/self.N)*np.sum(np.power((y-average),2))
         std = np.sqrt(variance)
         median = np.median(y)
-        average_power = energy/self.N
+        
+        own_mean = mean_own(y)
+        own_rmse = rmse_own(y)
+        own_variance = variance_own(y, own_mean)
+        own_std = math.sqrt(own_variance)
+        own_median = median_own(y)
+        own_average_power = own_rmse**2
+        own_energy = own_average_power*len(y)
+        
+        
+        
         
         analyzed_data={
-            "energy":"{}".format(round(energy)),
             "rmse":"{:.4f}".format(rmse),
             "variance":"{:.4f}".format(variance),
             "std":"{:.4f}".format(std),
             "median":"{:.4e}".format(median),
             "average":"{:.4e}".format(average),
-            "average_power":"{:.4f}".format(average_power),
-            "ipower":power
+            "ipower":power,
+            "own_rmse":"{:.4f}".format(own_rmse),
+            "own_average_power":"{:.4f}".format(own_average_power),
+            "own_median":"{:.4e}".format(own_median),
+            "own_std":"{:.4f}".format(own_std),
+            "own_variance":"{:.4f}".format(own_variance),
+            "own_rmse":"{:.4f}".format(own_rmse),
+            "own_average":"{:.4e}".format(own_mean),
+            "own_energy":round(own_energy)
+            
         }
       
         return ([i/self.__fs for i in x],y,analyzed_data)
