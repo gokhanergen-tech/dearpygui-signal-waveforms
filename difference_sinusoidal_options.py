@@ -1,7 +1,5 @@
 import math
 import numpy as np
-from functools import reduce
-
 
 def mean_own(y):
     return math.fsum(y) / len(y)

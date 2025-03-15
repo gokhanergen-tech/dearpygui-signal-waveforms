@@ -3,10 +3,12 @@ import numpy as np
 
 from difference_sinusoidal_options import DifferenceSinusoidal
 from frequence_options import FrequencyOptions, wave_forms
+from snr_sinusoidal import SnrSinusoidal
 
 
 frequency_options = FrequencyOptions()
 difference_sinusoidals = DifferenceSinusoidal()
+snr_analysis = SnrSinusoidal(frequency_options)
 
 input_fields = [
         ("Ampitute", "ampitute"),
@@ -102,6 +104,14 @@ def handle_change_wave_form(_, value):
      setattr(frequency_options, "wave_form", value)
     update_stem_graph()
     
+def snr_analysis_window():
+    with dpg.window(label="SNR Analysis", 
+                    tag="snr_analysis_window", 
+                    on_close=lambda: dpg.delete_item("snr_analysis_window"),
+                    width=1500,
+                    height=360):
+        snr_analysis.render("snr_analysis_window")
+    
 def handle_change_values(s, d, a):
    setattr(graph_type == "Waveforms" and frequency_options or difference_sinusoidals, a, d)
    update_stem_graph()
@@ -139,6 +149,8 @@ def handle_change_graph_type(_, value):
                       callback=handle_change_wave_form,
                       default_value=frequency_options.wave_form,
                       label="Waveform", width=100)
+          dpg.add_button(label="SNR Analysis", callback=snr_analysis_window)
+        
           dpg.add_spacer(height=100)
     else:
         with dpg.group(parent="settings",tag="difference_signals", width=400):
