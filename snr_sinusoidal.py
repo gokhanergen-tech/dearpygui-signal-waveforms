@@ -23,6 +23,13 @@ class SnrSinusoidal:
         u_rmse_noise = u_rmse_signal/(10**(self.__snr_value/20))
         noise_signal = np.random.normal(0, u_rmse_noise, len(x))
         superimposed_noise = y+noise_signal
+        
+        length_data = len(y)
+        u_real_rmse = np.sqrt(np.sum(y**2)/length_data)
+        u_noise_rmse = np.sqrt(np.sum(noise_signal**2)/length_data)
+        
+        real_snr = 20*np.log10(u_real_rmse/u_noise_rmse)
+        
         hist, bin_edges = np.histogram(noise_signal, bins=64)
         
         dpg.set_value("snr_sinusoidal", [x,y])
@@ -30,6 +37,8 @@ class SnrSinusoidal:
         dpg.set_value("snr_noise_hist",[bin_edges.tolist(),hist.tolist()])
         dpg.set_value("snr_noise_super_imposed", [x,superimposed_noise.tolist()])
         dpg.configure_item("noise_signal_plot",label = f"Signal and noisy separately shown (desired SNR: {self.__snr_value})")
+        dpg.configure_item("snr_noise_super_imposed", label = f"Superimposed noise (Real SNR {real_snr})")
+        
     
     def render(self, parent):
         
